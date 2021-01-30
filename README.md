@@ -17,9 +17,7 @@ echo API_LISTENER=0.0.0.0:9088 >> cmd/.env &&
 echo API_WORKER_COUNT=50 >> cmd/.env
 ```
 <h3>Build docker image</h3>
-```
-docker build -t re_web_page_analyzer -f Dockerfile .
-```
+```docker build -t re_web_page_analyzer -f Dockerfile .```
 <h3>Run docker image</h3>
 ```
 docker run -it -d -p 9088:9088 --env-file=cmd/.env --name re_web_page_analyzer re_web_page_analyzer:latest
