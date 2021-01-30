@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/Dmitriy-Opria/re_web_page_analyzer/internal/model"
 	"net/http"
 
 	"github.com/Dmitriy-Opria/re_web_page_analyzer/internal/service"
@@ -16,10 +17,12 @@ func NewParserHandler(parseService *service.ParserService) *ParserHandler {
 }
 
 func (h *ParserHandler) Parse(w http.ResponseWriter, r *http.Request) *rye.Response {
-	err := h.service.Parse(r.Context())
+	ctx := r.Context()
+	request := ctx.Value(ContextUrlPayload).(*model.ParserRequest)
+	resp, err := h.service.Parse(r.Context(), request.URL)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return ServerErrorResponse(err, "can't execute service health")
 	}
-	return respondWithMessage(w, http.StatusOK, "health")
+	return respondWithJson(w, http.StatusOK, resp)
 }

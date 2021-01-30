@@ -5,6 +5,7 @@ go 1.14
 require (
 	github.com/InVisionApp/rye v1.0.8
 	github.com/Pallinder/go-randomdata v1.2.0
+	github.com/PuerkitoBio/goquery v1.6.1
 	github.com/cactus/go-statsd-client v3.1.1+incompatible // indirect
 	github.com/go-chi/chi v1.5.1
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0

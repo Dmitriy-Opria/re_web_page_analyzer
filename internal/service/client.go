@@ -9,13 +9,13 @@ type ClientRepository interface {
 	Parse(ctx context.Context) error
 }
 
-type ClientService struct{
-	client             *http.Client
+type ClientService struct {
+	client *http.Client
 }
 
-func NewClientService(client *http.Client,) *ClientService {
+func NewClientService(client *http.Client) *ClientService {
 	return &ClientService{
-		client:             client,
+		client: client,
 	}
 }
 

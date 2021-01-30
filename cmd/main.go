@@ -27,7 +27,7 @@ import (
 func main() {
 	cf := config.InitConfig()
 	// Init logger
-	initLogger(log.Level(cf.LogLevel))
+	initLogger(cf.LogLevel)
 
 	// injected client for services
 	httpClient := &http.Client{
@@ -47,7 +47,7 @@ func main() {
 	}
 
 	staff := service.NewStaffService()
-	parser := service.NewParserService(httpClient)
+	parser := service.NewParserService(httpClient, cf.WorkerCount)
 	r := api.NewHandler(staff, parser)
 	srv := &http.Server{Addr: cf.ApiListener, Handler: r}
 	log.Infof("Start service on http://%s", cf.ApiListener)
