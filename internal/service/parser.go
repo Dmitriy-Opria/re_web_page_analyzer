@@ -67,34 +67,34 @@ func (p *ParserService) version(doc *goquery.Document) string {
 	}
 
 	switch {
-	case strings.Contains(versionHTML, "<!DOCTYPE HTML>"):
-		return "HTML5 and beyond"
-	case strings.Contains(versionHTML, "W3C//DTD HTML 4.01 Frameset//EN"):
+	case strings.Contains(strings.ToLower(versionHTML), strings.ToLower("W3C//DTD HTML 4.01 Frameset//EN")):
 		return "HTML 4.01 Frameset"
-	case strings.Contains(versionHTML, "W3C//DTD HTML 4.01 Transitional//EN"):
+	case strings.Contains(strings.ToLower(versionHTML), strings.ToLower("W3C//DTD HTML 4.01 Transitional//EN")):
 		return "HTML 4.01 Transitional"
-	case strings.Contains(versionHTML, "W3C//DTD HTML 4.01//EN"):
+	case strings.Contains(strings.ToLower(versionHTML), strings.ToLower("W3C//DTD HTML 4.01//EN")):
 		return "HTML 4.01 Strict"
-	case strings.Contains(versionHTML, "W3C//DTD XHTML 1.0 Frameset//EN"):
+	case strings.Contains(strings.ToLower(versionHTML), strings.ToLower("W3C//DTD XHTML 1.0 Frameset//EN")):
 		return "XHTML 1.0 Frameset"
-	case strings.Contains(versionHTML, "W3C//DTD XHTML 1.0 Transitional//EN"):
+	case strings.Contains(strings.ToLower(versionHTML), strings.ToLower("W3C//DTD XHTML 1.0 Transitional//EN")):
 		return "XHTML 1.0 Transitional"
-	case strings.Contains(versionHTML, "W3C//DTD XHTML 1.0 Strict//EN"):
+	case strings.Contains(strings.ToLower(versionHTML), strings.ToLower("W3C//DTD XHTML 1.0 Strict//EN")):
 		return "XHTML 1.0 Strict"
-	case strings.Contains(versionHTML, "W3C//DTD XHTML 1.1//EN"):
+	case strings.Contains(strings.ToLower(versionHTML), strings.ToLower("W3C//DTD XHTML 1.1//EN")):
 		return "XHTML 1.1 DTD"
-	case strings.Contains(versionHTML, "W3C//DTD XHTML Basic 1.1//EN"):
+	case strings.Contains(strings.ToLower(versionHTML), strings.ToLower("W3C//DTD XHTML Basic 1.1//EN")):
 		return "XHTML Basic 1.1"
-	case strings.Contains(versionHTML, "W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN"):
+	case strings.Contains(strings.ToLower(versionHTML), strings.ToLower("W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN")):
 		return "XHTML + MathML + SVG - DTD"
-	case strings.Contains(versionHTML, "W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN"):
+	case strings.Contains(strings.ToLower(versionHTML), strings.ToLower("W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN")):
 		return "XHTML + MathML + SVG Profile (XHTML as the host language) - DTD"
-	case strings.Contains(versionHTML, "W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN"):
+	case strings.Contains(strings.ToLower(versionHTML), strings.ToLower("W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN")):
 		return "XHTML + MathML + SVG Profile (Using SVG as the host) - DTD"
-	case strings.Contains(versionHTML, "W3C//DTD SVG 1.1//EN"):
+	case strings.Contains(strings.ToLower(versionHTML), strings.ToLower("W3C//DTD SVG 1.1//EN")):
 		return "SVG 1.1 Full - DTD"
-	case strings.Contains(versionHTML, "W3C//DTD SVG 1.0//EN"):
+	case strings.Contains(strings.ToLower(versionHTML), strings.ToLower("W3C//DTD SVG 1.0//EN")):
 		return "SVG 1.0 - DTD:"
+	case strings.Contains(strings.ToLower(versionHTML), strings.ToLower("!DOCTYPE HTML")):
+		return "HTML5 and beyond"
 	default:
 		return "undefined"
 	}
@@ -125,29 +125,30 @@ func (p *ParserService) setInternalLink(ctx context.Context, doc *goquery.Docume
 	host := doc.Url.Host
 	doc.Find("a").Each(func(i int, s *goquery.Selection) {
 		// For each item found, get title
-		href, _ := s.Attr("href")
-		link := model.Link{
-			Name: strings.TrimSpace(
-				strings.Replace(
+		if href, _ := s.Attr("href"); !strings.Contains(href, "javascript") {
+			link := model.Link{
+				Name: strings.TrimSpace(
 					strings.Replace(
-						s.Text(), "\n", "", -1),
-					"\t", "", -1),
-			),
-			Url: href,
-		}
-		if len([]rune(href)) > 0 {
-			if strings.Contains(href, host) {
-				internalLink = append(internalLink, &link)
-			} else if []rune(href)[0] == '/' || []rune(href)[0] == '#' || []rune(href)[0] == ':' {
+						strings.Replace(
+							s.Text(), "\n", "", -1),
+						"\t", "", -1),
+				),
+				Url: href,
+			}
+			if len([]rune(href)) > 0 {
+				if strings.Contains(href, host) {
+					internalLink = append(internalLink, &link)
+				} else if []rune(href)[0] == '/' || []rune(href)[0] == '#' || []rune(href)[0] == ':' {
 
-				link.Url = fmt.Sprintf("http://%s/%s", host,
-					strings.Replace(
-						strings.Replace(link.Url,
-							"#", "/", -1),
-						"/", "", -1))
-				internalLink = append(internalLink, &link)
-			} else {
-				externalLink = append(externalLink, &link)
+					link.Url = fmt.Sprintf("http://%s/%s", host,
+						strings.Replace(
+							strings.Replace(link.Url,
+								"#", "/", -1),
+							"/", "", -1))
+					internalLink = append(internalLink, &link)
+				} else {
+					externalLink = append(externalLink, &link)
+				}
 			}
 		}
 	})

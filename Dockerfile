@@ -1,6 +1,6 @@
 # Build executable.
 # docker build -t re_web_page_analyzer -f Dockerfile .
-# docker run -it -d -p 9065:9065 --env-file=cmd/.env --name re_web_page_analyzer re_web_page_analyzer:latest
+# docker run -it -d -p 9088:9088 --env-file=cmd/.env --name re_web_page_analyzer re_web_page_analyzer:latest
 FROM golang:1.15 AS build-env
 # default argument when not provided in the --build-arg
 ARG PROD

@@ -41,7 +41,7 @@ func respondWithMessage(w http.ResponseWriter, statusCode int, message string) *
 }
 
 func respondWithJson(w http.ResponseWriter, statusCode int, jsonData interface{}) *rye.Response {
-	responseJSON, err := json.Marshal(jsonData)
+	responseJSON, err := json.MarshalIndent(jsonData, "", "\t")
 	if err != nil {
 		return ServerErrorResponse(err, "unable to generate response JSON")
 	}
