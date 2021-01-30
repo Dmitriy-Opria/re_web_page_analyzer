@@ -3,10 +3,10 @@ Web page parsing and analyzing
 <h1>How to start?</h1>
 
 <h3>Clone</h3>
-```
+`
 git clone git@github.com:Dmitriy-Opria/re_web_page_analyzer.git
 cd re_web_page_analyzer
-```
+`
 <h3>Create .env file</h3>
 ```
 touch cmd/.env &&
