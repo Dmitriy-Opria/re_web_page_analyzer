@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<body>
+<pre style="font-family:Calibri">
+
+<table margin="5" border=".1" cellspacing="0" cellpadding="5">
+    <caption align="left"><strong>Result of analyzing</strong></caption>
+    <tr bgcolor="#6495ed">
+        <td><strong>Field Name</strong></td>
+        <td><strong>Value</strong></td>
+    </tr>
+    <tr bgcolor="#f0f8ff">
+        <td><strong>Html Version</strong></td>
+        <td>{{index .Model "HtmlVersion"}}</td>
+    </tr>
+
+    <tr bgcolor="#f0f8ff">
+        <td><strong>Page Title</strong></td>
+        <td>{{index .Model "Title"}}</td>
+    </tr>
+
+    <tr bgcolor="#f0f8ff">
+        <td><strong>H1 headers count</strong></td>
+        <td>{{index .Model "H1"}}</td>
+    </tr>
+
+    <tr bgcolor="#f0f8ff">
+        <td><strong>H2 headers count</strong></td>
+        <td>{{index .Model "H2"}}</td>
+    </tr>
+
+    <tr bgcolor="#f0f8ff">
+        <td><strong>H3 headers count</strong></td>
+        <td>{{index .Model "H3"}}</td>
+    </tr>
+
+    <tr bgcolor="#f0f8ff">
+        <td><strong>H4 headers count</strong></td>
+        <td>{{index .Model "H4"}}</td>
+    </tr>
+
+    <tr bgcolor="#f0f8ff">
+        <td><strong>H5 headers count</strong></td>
+        <td>{{index .Model "H5"}}</td>
+    </tr>
+
+    <tr bgcolor="#f0f8ff">
+        <td><strong>H6 headers count</strong></td>
+        <td>{{index .Model "H6"}}</td>
+    </tr>
+
+    <tr bgcolor="#f0f8ff">
+        <td><strong>Internal links</strong></td>
+        <td>{{index .Model "Internal"}}</td>
+    </tr>
+
+    <tr bgcolor="#f0f8ff">
+        <td><strong>Internal inaccessible links</strong></td>
+        <td>{{index .Model "InternalInaccessible"}}</td>
+    </tr>
+
+    <tr bgcolor="#f0f8ff">
+        <td><strong>External links</strong></td>
+        <td>{{index .Model "External"}}</td>
+    </tr>
+
+    <tr bgcolor="#f0f8ff">
+        <td><strong>External inaccessible links</strong></td>
+        <td>{{index .Model "ExternalInaccessible"}}</td>
+    </tr>
+
+    <tr bgcolor="#f0f8ff">
+        <td><strong>Login page</strong></td>
+        <td>{{index .Model "Login"}}</td>
+    </tr>
+
+</table>
+</pre>
+</body>
+</html>
