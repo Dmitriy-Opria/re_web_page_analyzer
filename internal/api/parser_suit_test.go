@@ -1,11 +1,11 @@
 package api_test
 
 import (
+	"testing"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/sirupsen/logrus"
-
-	"testing"
 )
 
 func TestAPI(t *testing.T) {

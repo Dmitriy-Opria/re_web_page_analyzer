@@ -1,12 +1,13 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/Dmitriy-Opria/re_web_page_analyzer/internal/service"
 	"github.com/InVisionApp/rye"
 	"github.com/go-chi/chi/middleware"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
-	"net/http"
 )
 
 func NewHandler(

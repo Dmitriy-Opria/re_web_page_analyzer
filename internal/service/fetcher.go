@@ -2,13 +2,14 @@ package service
 
 import (
 	"context"
-	"github.com/Dmitriy-Opria/re_web_page_analyzer/internal/model"
-	"github.com/PuerkitoBio/goquery"
-	"github.com/pkg/errors"
 	"io/ioutil"
 	"net/http"
 	"sync"
 	"time"
+
+	"github.com/Dmitriy-Opria/re_web_page_analyzer/internal/model"
+	"github.com/PuerkitoBio/goquery"
+	"github.com/pkg/errors"
 )
 
 type Fetcher interface {

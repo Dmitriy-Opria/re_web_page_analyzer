@@ -1,9 +1,9 @@
 package api
 
 import (
-	"github.com/Dmitriy-Opria/re_web_page_analyzer/internal/model"
 	"net/http"
 
+	"github.com/Dmitriy-Opria/re_web_page_analyzer/internal/model"
 	"github.com/Dmitriy-Opria/re_web_page_analyzer/internal/service"
 	"github.com/InVisionApp/rye"
 )
