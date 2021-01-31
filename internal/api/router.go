@@ -1,16 +1,12 @@
 package api
 
 import (
-	"net/http"
-	"os"
-	"path"
-
-	"github.com/Dmitriy-Opria/re_web_page_analyzer/internal/log"
 	"github.com/Dmitriy-Opria/re_web_page_analyzer/internal/service"
 	"github.com/InVisionApp/rye"
 	"github.com/go-chi/chi/middleware"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
+	"net/http"
 )
 
 func NewHandler(
@@ -19,7 +15,7 @@ func NewHandler(
 
 	staffHandler := NewStaffHandler(staff)
 	parserHandler := NewParserHandler(parser)
-	clientHandler := NewClientHandler(nil)
+	clientHandler := NewClientHandler(parser)
 
 	middlewareHandler := rye.NewMWHandler(rye.Config{})
 
@@ -28,10 +24,6 @@ func NewHandler(
 	router.Handle("/health", middlewareHandler.Handle([]rye.Handler{
 		staffHandler.Health,
 	})).Methods(http.MethodGet)
-
-	workDir, _ := os.Getwd()
-	log.Infof("working_dir: %v", workDir)
-	router.PathPrefix("/swagger/").Handler(http.StripPrefix("/swagger/", http.FileServer(http.Dir(path.Join(workDir, "./swagger/")))))
 
 	v1 := router.PathPrefix("/api/v1").Subrouter()
 
@@ -48,9 +40,13 @@ func NewHandler(
 	// Client
 	//////////////////////////////////////////////////////////////////////////////
 
-	v1.Handle("/parsing/page/analyze", middlewareHandler.Handle([]rye.Handler{
-		clientHandler.Client,
+	v1.Handle("/analyzer", middlewareHandler.Handle([]rye.Handler{
+		clientHandler.Form,
 	})).Methods(http.MethodGet)
+
+	v1.Handle("/analyzer", middlewareHandler.Handle([]rye.Handler{
+		clientHandler.Result,
+	})).Methods(http.MethodPost)
 
 	r := cors.AllowAll()
 	h := r.Handler(router)

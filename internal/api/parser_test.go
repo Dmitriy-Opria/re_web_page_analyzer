@@ -70,7 +70,7 @@ var _ = Describe("Parsing Test", func() {
 
 		router = api.NewHandler(staff, parser)
 	})
-	Describe("online cpa evaluation", func() {
+	Describe("should parse html page and compare results", func() {
 		JustBeforeEach(func() {
 			doc, _ := goquery.NewDocumentFromReader(bytes.NewBuffer(htmlPage))
 			doc.Url = &url.URL{Host: "www.w3schools.com"}
@@ -84,7 +84,7 @@ var _ = Describe("Parsing Test", func() {
 			fetcher.IsAccessibleReturnsOnCall(4, &model.WorkerWrapper{Index: 1, Result: true}, nil)
 			fetcher.IsAccessibleReturnsOnCall(5, &model.WorkerWrapper{Index: 2, Result: true}, nil)
 		})
-		It("should return billing fee section", func() {
+		It("should make parsing http request and check the results", func() {
 			w := httptest.NewRecorder()
 			reqBody, _ := json.Marshal(req)
 			request, _ := http.NewRequest(http.MethodPost, "/api/v1/parsing/page/analyze", bytes.NewBuffer(reqBody))

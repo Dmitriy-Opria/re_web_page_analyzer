@@ -49,8 +49,9 @@ func main() {
 	staff := service.NewStaffService()
 	fetcher := service.NewFetcherService(httpClient)
 	parser := service.NewParserService(fetcher, cf.WorkerCount)
-	r := api.NewHandler(staff, parser)
-	srv := &http.Server{Addr: cf.ApiListener, Handler: r}
+
+	handler := api.NewHandler(staff, parser)
+	srv := &http.Server{Addr: cf.ApiListener, Handler: handler}
 	log.Infof("Start service on http://%s", cf.ApiListener)
 	go func() {
 		if err := srv.ListenAndServe(); err != nil {
