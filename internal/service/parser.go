@@ -3,8 +3,6 @@ package service
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"strings"
 	"sync"
 	"time"
@@ -12,7 +10,6 @@ import (
 	"github.com/Dmitriy-Opria/re_web_page_analyzer/internal/log"
 	"github.com/Dmitriy-Opria/re_web_page_analyzer/internal/model"
 	"github.com/PuerkitoBio/goquery"
-	"github.com/pkg/errors"
 )
 
 type ParserRepository interface {
@@ -20,22 +17,22 @@ type ParserRepository interface {
 }
 
 type ParserService struct {
-	client      *http.Client
+	fetcher     Fetcher
 	workerCount int
 
 	sync.WaitGroup
 }
 
-func NewParserService(client *http.Client, workerCount int) *ParserService {
+func NewParserService(fetcher Fetcher, workerCount int) *ParserService {
 	return &ParserService{
-		client:      client,
+		fetcher:     fetcher,
 		workerCount: workerCount,
 	}
 }
 
 func (p *ParserService) Parse(ctx context.Context, url string) (*model.ParserResponse, error) {
 	// Load the HTML document
-	doc, err := goquery.NewDocument(url)
+	doc, err := p.fetcher.Fetch(url)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -152,8 +149,10 @@ func (p *ParserService) setInternalLink(ctx context.Context, doc *goquery.Docume
 			}
 		}
 	})
+
 	p.checkLinks(ctx, internalLink)
 	p.checkLinks(ctx, externalLink)
+
 	return internalLink, externalLink
 }
 
@@ -168,7 +167,7 @@ func (p *ParserService) checkLinks(ctx context.Context, links []*model.Link) {
 				<-jobPool
 				p.Done()
 			}()
-			result, err := p.isAccessible(ctx, &model.WorkerWrapper{
+			result, err := p.fetcher.IsAccessible(ctx, &model.WorkerWrapper{
 				Index: index,
 				Url:   link.Url,
 			})
@@ -181,32 +180,6 @@ func (p *ParserService) checkLinks(ctx context.Context, links []*model.Link) {
 		time.Sleep(50 * time.Millisecond)
 	}
 	p.Wait()
-}
-
-func (p *ParserService) isAccessible(ctx context.Context, pr *model.WorkerWrapper) (*model.WorkerWrapper, error) {
-	req, err := http.NewRequest(http.MethodGet, pr.Url, nil)
-	req.Header.Set("Content-Type", "application/json")
-	if err != nil {
-		return nil, errors.Wrap(err, "creating preprocess request failed")
-	}
-	const requestTimeout = 10 * time.Second
-	ctx1, _ := context.WithTimeout(ctx, requestTimeout)
-
-	response, err := p.client.Do(req.WithContext(ctx1))
-	if response != nil && response.Body != nil {
-		defer response.Body.Close()
-	}
-	if err != nil {
-		return nil, errors.Wrap(err, "creating preprocess api failed")
-	}
-	_, err = ioutil.ReadAll(response.Body)
-	if err != nil {
-		return nil, errors.Wrap(err, "reading preprocess body failed")
-	}
-	if response.StatusCode >= 200 || response.StatusCode < 400 {
-		pr.Result = true
-	}
-	return pr, nil
 }
 
 func (p *ParserService) login(doc *goquery.Document) bool {
